@@ -1,0 +1,60 @@
+version: "3.7"
+
+services:
+
+  app-php:
+    build:
+      args:
+        user: ${APP_USER}
+        uid: 1000
+      context: ./
+      dockerfile: docker/php/Dockerfile
+    container_name: app-php
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - app-network
+
+  app-server:
+    image: nginx:alpine
+    container_name: app-server
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/:/etc/nginx/conf.d/
+    networks:
+      - app-network
+
+  app-storage:
+    image: mysql:5.7
+    container_name: app-storage
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - app-network
+
+  app-nodejs:
+    image: node:13-alpine
+    container_name: app-nodejs
+    restart: unless-stopped
+    working_dir: /var/www/
+    command: sh -c "npm install && npm run watch"
+    volumes:
+      - ./:/var/www
+      - ./node_modules:/var/www/node_modules
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
