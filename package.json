@@ -9,9 +9,17 @@
         "prod": "npm run production",
         "production": "mix --production"
     },
+    "dependencies": {
+        "core-js": "^3.6.5",
+        "vue": "^2.6.11",
+        "vue-router": "^3.2.0",
+        "vuex": "^3.4.0"
+    },
     "devDependencies": {
         "axios": "^0.21",
         "bootstrap": "^4.0.0",
+        "browser-sync": "^2.26.13",
+        "browser-sync-webpack-plugin": "^2.2.2",
         "jquery": "^3.2",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
